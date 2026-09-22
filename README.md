@@ -2,52 +2,82 @@
 
 **Live app:** https://fintech-credit-risk-dashboard.streamlit.app/
 
-A fintech credit risk analytics dashboard built on 1.37M real LendingClub loan records, framed around a real-world case comparison: **Capital One vs. Wonga** — two lenders that faced the exact same underwriting decision, with opposite outcomes.
+Built on 1.37M real LendingClub loan records. The project is framed around one question: why did Capital One succeed while Wonga collapsed — when both were making the same lending decisions?
 
 ![Overview](screenshot-overview.png)
 
 ## The Story
 
-Every consumer lender faces the same core question: given a borrower's income, debts, and credit history, should the company lend to them — and at what rate?
+- **Capital One** used data-driven credit scoring to price risk per borrower → became a top-10 US bank
+- **Wonga** automated approvals without proper affordability checks → wrote off £220M in bad loans (2014) → collapsed in 2018
 
-- **Capital One** (founded 1994) used data-driven credit scoring to price risk per borrower, becoming a top-10 US bank.
-- **Wonga**, a UK payday lender, automated approvals without rigorous affordability checks — wrote off £220M in loans (2014) and collapsed into administration in 2018.
+Same decision. Opposite outcomes. The difference was in the data.
 
-This dashboard replicates that exact risk-decision point on real lending data, using the same signals — credit grade, debt-to-income ratio, income level — that separate disciplined underwriting from a blind spot that sinks a company.
+This project replicates that exact risk-decision point using real loan data — the same signals (credit grade, DTI, income) that separate disciplined underwriting from the blind spot that sinks a company.
 
-## What It Does
+## What I Built
 
-- **Executive Overview** — portfolio-level KPIs, default rate by credit grade, loan origination trends over time
-- **Risk Segmentation** — a Grade × DTI heatmap showing compounding risk, and interest rate pricing by grade (the Capital One model)
-- **Affordability Analysis** — default rate by DTI and income bucket, isolating the exact signal weak affordability checks miss (loans with DTI ≥ 30 default at 2x the rate of low-DTI loans)
-- **Geographic & Purpose Risk** — default rate breakdowns by state and loan purpose
-- Interactive filters (grade, term, purpose) via a top-right filter panel, applied live across all views
+**Streamlit Web App** (live above)
+- Portfolio KPIs, default rate by grade, loan trends over time
+- Grade × Term risk matrix, interest rate pricing by grade
+- Default rate by DTI bucket and income segment
+- Geographic and purpose-level risk breakdown
+- Interactive filters applied live across all views
+
+**Power BI Dashboard** (4 pages, local)
+- Same analysis rebuilt in Power BI with DAX measures and synced slicers
+- Designed for a business/BI audience
 
 ![Risk Segmentation](screenshot-risk.png)
+
+**Power BI — Overview**
+![Power BI Overview](powerbi-overview.png.png)
+
+**Power BI — Risk Segmentation**
+![Power BI Risk](powerbi-risk.png.png)
+
+**Power BI — Affordability**
+![Power BI Affordability](powerbi-affordability.png.png)
+
+**Power BI — Geographic & Purpose**
+![Power BI Geo](powerbi-geo.png.png)
+
+## SQL Analysis
+
+All core risk metrics were computed directly in MySQL before any visualization. See `analysis.sql` for the full query set — default rate by grade, DTI bucket, income segment, state, and high-risk segment isolation (Grade D-G + DTI > 30).
+
+Sample:
+```sql
+-- High-risk segment: low grade + high DTI
+SELECT purpose, COUNT(*), ROUND(AVG(is_default)*100, 2) AS default_rate
+FROM loans
+WHERE grade IN ('D','E','F','G') AND dti > 30
+GROUP BY purpose ORDER BY default_rate DESC;
+```
 
 ## Tech Stack
 
 | Layer | Tool |
 |---|---|
-| Data source | [LendingClub loan data](https://www.kaggle.com/datasets/wordsforthewise/lending-club) (Kaggle, 2.26M raw records) |
-| Data cleaning | Python, pandas |
+| Data source | LendingClub via Kaggle (2.26M raw records) |
+| Cleaning | Python, pandas |
 | Database | MySQL |
-| Analysis | SQL |
-| Business intelligence | Power BI (4-page dashboard, DAX measures, synced slicers) |
-| Web dashboard | Python, Streamlit, Plotly |
+| Analysis | SQL (see analysis.sql) |
+| BI Dashboard | Power BI — DAX measures, calculated columns, slicers |
+| Web app | Python, Streamlit, Plotly |
 | Deployment | Streamlit Community Cloud |
 
 ## Data Pipeline
 
-1. Downloaded and cleaned 2.26M raw loan records → 1.37M completed loans with known outcomes
-2. Engineered `is_default` target flag from loan status, plus DTI and income risk buckets
-3. Loaded into MySQL for SQL-based risk analysis (default rate by grade, purpose, state, DTI, income)
-4. Built a 4-page Power BI dashboard for BI-style exploration
-5. Rebuilt as a public Streamlit web app for accessible, shareable analysis
+1. Cleaned 2.26M records → 1.37M completed loans with known outcomes
+2. Engineered `is_default` flag, DTI buckets, income buckets
+3. Loaded into MySQL → ran SQL queries for all risk metrics
+4. Built 4-page Power BI dashboard with DAX and slicers
+5. Rebuilt as public Streamlit app for shareability
 
 ## Key Finding
 
-Loans in the highest DTI bracket (30+) default at **31%+**, nearly double the rate of the lowest-DTI segment — demonstrating exactly the kind of affordability signal a rigorous risk model catches and a shallow one misses.
+Loans with DTI 30+ default at **31%** — nearly double the lowest DTI segment. That's the exact affordability signal Wonga's model missed. A proper risk model catches it. A shallow one doesn't.
 
 ## Run Locally
 
@@ -60,4 +90,4 @@ streamlit run dashboard.py
 
 ## Author
 
-Ritesh — IT Engineering student, building toward a Data Analyst role.
+Ritesh — IT Engineering student, working toward a Data Analyst role.
