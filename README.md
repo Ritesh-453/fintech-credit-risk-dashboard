@@ -4,8 +4,6 @@
 
 Built on 1.37M real LendingClub loan records. The project is framed around one question: why did Capital One succeed while Wonga collapsed — when both were making the same lending decisions?
 
-![Overview](screenshot-overview.png)
-
 ## The Story
 
 - **Capital One** used data-driven credit scoring to price risk per borrower → became a top-10 US bank
@@ -27,8 +25,6 @@ This project replicates that exact risk-decision point using real loan data — 
 **Power BI Dashboard** (4 pages, local)
 - Same analysis rebuilt in Power BI with DAX measures and synced slicers
 - Designed for a business/BI audience
-
-![Risk Segmentation](screenshot-risk.png)
 
 **Power BI — Overview**
 ![Power BI Overview](powerbi-overview.png.png)
