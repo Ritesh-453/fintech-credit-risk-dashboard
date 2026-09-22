@@ -247,6 +247,10 @@ span[data-baseweb="tag"] svg {{ fill: {TEXT} !important; }}
     border-color: {PURPLE} !important;
     color: {PURPLE} !important;
 }}
+.block-container {{
+    padding-bottom: 1rem !important;
+}}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -409,7 +413,7 @@ with tab4:
 # FOOTER
 # ---------------------------------------------------------------------------
 st.markdown(f"""
-<div class="footer-note">
+<div class="footer-note" style="margin-top:0px; padding-top:10px;">
 Capital One (founded 1994) priced credit risk per borrower using data and grew into a top-10 US bank.
 Wonga automated loan approvals without rigorous affordability analysis, wrote off £220M in loans (2014),
 and collapsed into administration in 2018. This dashboard replicates that exact risk-decision point on
