@@ -61,9 +61,10 @@ footer {{ visibility: hidden; }}
 }}
 
 .block-container {{
-    padding-top: 1.5rem !important;
+    padding-top: 0.5rem !important;
     padding-left: 2.5rem !important;
     padding-right: 2.5rem !important;
+    padding-bottom: 0.5rem !important;
     max-width: 100% !important;
 }}
 
