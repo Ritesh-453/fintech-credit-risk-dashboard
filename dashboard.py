@@ -1,3 +1,18 @@
+import threading
+import requests
+import time
+
+def keep_alive():
+    while True:
+        time.sleep(14 * 60)  # 14 minutes
+        try:
+            requests.get("https://fintech-credit-risk-dashboard.streamlit.app/")
+        except:
+            pass
+
+thread = threading.Thread(target=keep_alive, daemon=True)
+thread.start()
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
